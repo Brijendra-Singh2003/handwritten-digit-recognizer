@@ -3,19 +3,21 @@ using namespace std;
 
 #include "./src/input.cpp"
 
-const int n_input = 28 * 28;
-const int n_h1 = 32;
-const int n_h2 = 16;
-const int n_output = 10;
-const int MAX_ITERATIONS = 20;
+// Hyperparameters
+const int n_h1 = 32;    // no of nurons in hidden layer 1
+const int n_h2 = 16;    // no of nurons in hidden layer 2
+const int MAX_ITERATIONS = 100;
 const double LEARNING_RATE = 0.05;
+const string OP_WEIGHTS_FILE_PATH = "weights2.txt";
 
-// Sigmoid activation function
+// input and output dimensions
+const int n_input = 28 * 28;
+const int n_output = 10;
+
 double sigmoid(double x) {
     return 1 / (1 + exp(-x));
 }
 
-// Derivative of the Sigmoid function
 double sigmoid_derivative(double x) {
     return x * (1.0 - x);
 }
@@ -38,16 +40,25 @@ int main() {
     uniform_real_distribution<> dis(-1.0, 1.0);  // Random weights in range [-1, 1]
 
     for (auto &a : input_to_h1_weights)
-        for (double& n : a) n = dis(gen);
-    for (double& n : biases_h1) n = dis(gen);
+        for (double& n : a)
+            n = dis(gen);
+
+    for (double& n : biases_h1)
+        n = dis(gen);
 
     for (auto &a : h1_to_h2_weights)
-        for (double& n : a) n = dis(gen);
-    for (double& n : biases_h2) n = dis(gen);
+        for (double& n : a)
+            n = dis(gen);
+
+    for (double& n : biases_h2)
+        n = dis(gen);
 
     for (auto &a : h2_to_output_weights)
-        for (double& n : a) n = dis(gen);
-    for (double& n : biases_output) n = dis(gen);
+        for (double& n : a)
+            n = dis(gen);
+
+    for (double& n : biases_output)
+        n = dis(gen);
 
     // Training loop
     for (int iteration = 0; iteration < MAX_ITERATIONS; ++iteration) {
@@ -149,10 +160,7 @@ int main() {
             }
         }
 
-        // Print the total error every 1000 iterations
-        // if (iteration % 1000 == 0) {
-            cout << "Iteration: " << iteration << ", Total Error: " << total_error << endl;
-        // }
+        cout << "Iteration: " << iteration << ", Total Error: " << total_error << endl;
 
         // Stop if the error is sufficiently low
         if (total_error < 1e-6) {
@@ -214,7 +222,9 @@ int main() {
         cout << "Output: " << max_i << endl;
     }
 
-    std::ofstream fout("weights.txt", std::ios::out);
+
+    // Save the weights
+    std::ofstream fout(OP_WEIGHTS_FILE_PATH, std::ios::out);
 
     for (int i=0; i<n_input; i++) {
         for(int j=0; j<n_h1; j++) {

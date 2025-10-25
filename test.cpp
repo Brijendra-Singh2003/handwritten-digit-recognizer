@@ -7,15 +7,13 @@ const int n_input = 28 * 28;
 const int n_h1 = 32;
 const int n_h2 = 16;
 const int n_output = 10;
-const int MAX_ITERATIONS = 1;
-const double LEARNING_RATE = 0.05;
+const string WEIGHTS_FILE_PATH = "weights2.txt";
 
-// Sigmoid activation function
+
 double sigmoid(double x) {
     return 1 / (1 + exp(-x));
 }
 
-// Derivative of the Sigmoid function
 double sigmoid_derivative(double x) {
     return x * (1.0 - x);
 }
@@ -29,9 +27,9 @@ vector<double> biases_h2(n_h2);
 vector<double> biases_output(n_output);
 
 int main() {
-    std::vector<MNISTImage> images = readIDX3Ubyte("train-images.idx3-ubyte");
-    std::vector<uint8_t> labels = readIDX1Ubyte("train-labels.idx1-ubyte");
-    std::ifstream fin("weights2.txt", std::ios::in);
+    std::vector<MNISTImage> images = readIDX3Ubyte("t10k-images.idx3-ubyte");
+    std::vector<uint8_t> labels = readIDX1Ubyte("t10k-labels.idx1-ubyte");
+    std::ifstream fin(WEIGHTS_FILE_PATH, std::ios::in);
 
     for (int i=0; i<n_input; i++) {
         for(int j=0; j<n_h1; j++) {
@@ -64,9 +62,10 @@ int main() {
     }
     fin.close();
 
-    // Recalculate and print outputs for all input patterns
-    cout << "Final Outputs:" << endl;
-    for (int i = 0; i < 5; ++i) {
+
+    cout << "Testing..." << endl;
+    int correct_outputs = 0;
+    for (int i = 0; i < images.size(); ++i) {
         // Forward propagation for each input
         array<double, n_h1> h1_outputs;
         for (int j = 0; j < n_h1; ++j) {
@@ -98,16 +97,22 @@ int main() {
             output[j] = sigmoid(output[j]);  // Apply activation function
         }
 
-        // Print the input and corresponding output
-        printImage(images[i]);
         int max_i = 0;
         for (int j = 0; j < n_output; j++) {
             if (output[j] > output[max_i]) {
                 max_i = j;
             }
         }
-        cout << "Output: " << max_i << endl;
+
+        if (max_i == labels[i]) {
+            ++correct_outputs;
+        }
+
+        if (i % 1000 == 0) {
+            cout << correct_outputs << " correct predictions out of " << (i+1) << " images.\n";
+        }
     }
 
+    cout << correct_outputs << " correct predictions out of " << images.size() << " images.\n";
     return 0;
 }
