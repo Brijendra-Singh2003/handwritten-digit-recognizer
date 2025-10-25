@@ -6,7 +6,6 @@ private:
     const int n_h1 = 32;
     const int n_h2 = 16;
     const int n_output = 10;
-    const string WEIGHTS_FILE_PATH = "weights2.txt";
 
     std::vector<std::vector<double>> input_to_h1_weights;
     std::vector<std::vector<double>> h1_to_h2_weights;
@@ -25,7 +24,7 @@ private:
     }
     
 public:
-    mnist_model() {
+    mnist_model(string wt_file_path) {
         input_to_h1_weights = std::vector<std::vector<double>>(n_input, std::vector<double>(n_h1));
         h1_to_h2_weights = vector<vector<double>>(n_h1, vector<double>(n_h2));
         h2_to_output_weights = vector<vector<double>>(n_h2, vector<double>(n_output));
@@ -34,7 +33,7 @@ public:
         biases_h2 = vector<double>(n_h2);
         biases_output = vector<double>(n_output);
 
-        std::ifstream fin(WEIGHTS_FILE_PATH, std::ios::in);
+        std::ifstream fin(wt_file_path, std::ios::in);
 
         for (int i = 0; i < n_input; i++) {
             for (int j = 0; j < n_h1; j++) {

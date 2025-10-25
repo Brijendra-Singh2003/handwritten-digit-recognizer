@@ -4,12 +4,13 @@
 const int HEIGHT = 720;
 const int WIDTH = 1280;
 const int BLOCK_SIZE = 32;
+const string WEIGHTS_FILE_PATH = "weights2.txt";
 
 int main() {
     InitWindow(WIDTH, HEIGHT, "Number Prediction");
     SetTargetFPS(60);
 
-    mnist_model model;
+    mnist_model model(WEIGHTS_FILE_PATH);
     int prediction = 8;
 
     Rectangle input_screen {24, 24, 672, 672};
